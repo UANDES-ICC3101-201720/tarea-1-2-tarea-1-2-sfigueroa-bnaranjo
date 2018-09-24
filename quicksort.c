@@ -29,10 +29,30 @@ int main(int argc, char** argv) {
            sysconf(_SC_NPROCESSORS_ONLN));
 
     /* TODO: parse arguments with getopt */
+	char *Pflg, *Eflg, *Tflg;
+    int T, E, P, c;
+    while ((c = getopt (argc, argv, "T:E:P:")) != -1)
+      switch (c){
+        case 'E':
+			Eflg = optarg;
+			break;
+        case 'P':
+			Pflg = optarg;
+			break;
+        case 'T':
+			Tflg = optarg;
+			break;
+    }
+    printf("E flag: %s T flag: %s and P flag: %s\n", Eflg, Tflg, Pflg);
+    T = atoi(Tflg);
+    E = atoi(Eflg);
+    P = atoi(Pflg);
 
     /* TODO: start datagen here as a child process. */
 
     /* Create the domain socket to talk to datagen. */
+
+
     struct sockaddr_un addr;
     int fd;
 
