@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS=-std=gnu11 -Wall -Werror
+CFLAGS=-std=gnu11 -Wall -Werror -lm 
 
 all: quicksort datagen
 
