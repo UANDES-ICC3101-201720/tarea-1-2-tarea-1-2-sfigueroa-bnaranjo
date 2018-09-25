@@ -55,6 +55,12 @@ void qs(UINT* lista,int limite_izq,int limite_der)
 
 // TODO: implement
 int parallel_quicksort(UINT* A, int lo, int hi) {
+		//Crear los numeros de threads dependiendo de la cantidad de nucleos
+		int max_threads = sysconf(_SC_NPROCESSORS_ONLN);
+		//while este desordenado
+			// a cada thread entregarle el arreglo al cual se hace quicksort con un pivote global
+			//retornar un array global 
+
     return 0;
 }
 
