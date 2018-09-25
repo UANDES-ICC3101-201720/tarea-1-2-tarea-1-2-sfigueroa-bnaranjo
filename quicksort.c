@@ -54,7 +54,7 @@ int main(int argc, char** argv) {
 				break;
 		}
 	}
-	if(num_pos < 0 || num_pos > pow(10,num_pot)){
+	if(num_pot < 0 || num_pot > pow(10,num_pot)){
 		printf("-P value out of range, exiting program\n"); 
 		exit(-1);
 }
@@ -129,7 +129,7 @@ int main(int argc, char** argv) {
 
         /* Print out the values obtained from datagen */
         for (UINT *pv = readbuf; pv < readbuf + numvalues; pv++) {
-            printf("%u\n", *pv);
+            printf("%u\n", *pv); // Aquí tendriamos que llamar a los quicksort
         }
 
         free(readbuf);
