@@ -11,57 +11,62 @@
 #include <string.h>
 #include <getopt.h>
 #include <pthread.h>
+#include <assert.h>
 #include "types.h"
 #include "const.h"
 #include "util.h"
+
+#define SWAP(x,y) do {\
+    __typeof__(x) tmp = x;\
+    x = y;\
+    y = tmp;\
+} while(0)
 
 // TODO: implement
 pthread_mutex_t lock = PTHREAD_MUTEX_INITIALIZER;
 pthread_cond_t cond = PTHREAD_COND_INITIALIZER;
 
-void qs(UINT* lista,int limite_izq,int limite_der)
-	{
-	    int izq,der,temporal,pivote;
-
-	    izq=limite_izq;
-	    der = limite_der;
-	    pivote = lista[(izq+der)/2];
-	    do{
-	        while(lista[izq]<pivote && izq<limite_der)izq++;
-	        while(pivote<lista[der] && der > limite_izq)der--;
-	        if(izq <=der)
-	        {
-	            temporal= lista[izq];
-	            lista[izq]=lista[der];
-	            lista[der]=temporal;
-	            izq++;
-	            der--;
-	        }
-
-	    }while(izq<=der);
-	    if(limite_izq<der){qs(lista,limite_izq,der);}
-	    if(limite_der>izq){qs(lista,izq,limite_der);}
-
-	}
-	void quicksort(UINT* lista,int n)
-	{
-
-		pthread_mutex_lock(&lock);
-	    qs(lista,0,n-1);
-			pthread_mutex_unlock(&lock);
-			pthread_cond_broadcast(&cond);
-
-	}
+int partition(UINT *array, int left, int right, int pivot)
+{
+    int pivotValue = array[pivot];
+    SWAP(array[pivot], array[right]);
+    int storeIndex = left;
+    for (int i=left ; i<right ; i++)
+    {
+        if (array[i] <= pivotValue)
+        {
+            SWAP(array[i], array[storeIndex]);
+            storeIndex++;
+        }
+    }
+    SWAP(array[storeIndex], array[right]);
+    return storeIndex;
+}
+void quicksort(UINT *array, int left, int right)
+{
+     if (right > left)
+     {
+        int pivotIndex = left + (right - left)/2;
+        pivotIndex = partition(array, left, right, pivotIndex);
+        quicksort(array, left, pivotIndex-1);
+        quicksort(array, pivotIndex+1, right);
+     }
+}
 
 // TODO: implement
 int parallel_quicksort(UINT* A, int lo, int hi) {
-		//Crear los numeros de threads dependiendo de la cantidad de nucleos
+		/*Crear los numeros de threads dependiendo de la cantidad de nucleos
 		int max_threads = sysconf(_SC_NPROCESSORS_ONLN);
+		for(int i = 0; i < max_threads; i++)
+		{
+
+		}
 		//while este desordenado
 			// a cada thread entregarle el arreglo al cual se hace quicksort con un pivote global
-			//retornar un array global 
-
+			//retornar un array global
+			*/
     return 0;
+
 }
 
 int main(int argc, char** argv) {
@@ -177,15 +182,15 @@ int main(int argc, char** argv) {
       /* Print out the values obtained from datagen */
 			printf("\nE%d: ", i+1);
       for (UINT *pv = readbuf; pv < readbuf + numvalues; pv++) {
-          printf("%u \t ", *pv); // Aquí tendriamos que llamar a los quicksort
+          printf("%u,\t ", *pv); // Aquí tendriamos que llamar a los quicksort
 
 			}
 
-			qs(readbuf, 0, numvalues);
+			quicksort(readbuf, 0, numvalues);
 
 			printf("\nS%d: ", i+1);
       for (UINT *pv = readbuf; pv < readbuf + numvalues; pv++) {
-          printf("%u\t ", *pv); // Aquí tendriamos que llamar a los quicksort
+          printf("%u,\t ", *pv); // Aquí tendriamos que llamar a los quicksort
 
 			}
       free(readbuf);
