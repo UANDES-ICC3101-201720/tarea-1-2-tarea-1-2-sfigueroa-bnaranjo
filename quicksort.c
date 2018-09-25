@@ -62,6 +62,15 @@ int main(int argc, char** argv) {
 
 
     /* TODO: start datagen here as a child process. */
+	pid_t pid = fork();
+	if(pid == -1){
+		perror("error al crear fork\n");
+		exit(1);
+	}
+	else if(pid == 0){
+		execvp("./datagen", argv);
+	}
+	
 
     /* Create the domain socket to talk to datagen. */
     struct sockaddr_un addr;
@@ -81,6 +90,7 @@ int main(int argc, char** argv) {
         close(fd);
         exit(-1);
     }
+
 
     /* DEMO: request two sets of unsorted random numbers to datagen */
     for (int i = 0; i < 2; i++) {
