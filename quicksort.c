@@ -54,7 +54,7 @@ int main(int argc, char** argv) {
 				break;
 		}
 	}
-	
+
     /* TODO: start datagen here as a child process. */
 	pid_t pid = fork();
 	if(pid == -1){
@@ -129,7 +129,7 @@ int main(int argc, char** argv) {
 
         /* Print out the values obtained from datagen */
         for (UINT *pv = readbuf; pv < readbuf + numvalues; pv++) {
-            printf("%u\n", *pv);
+            printf("%u\n", *pv); // Aquí tendriamos que llamar a los quicksort
         }
 
         free(readbuf);
