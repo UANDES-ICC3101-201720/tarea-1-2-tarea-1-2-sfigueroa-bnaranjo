@@ -92,11 +92,14 @@ int main(int argc, char** argv) {
         /* T value 3 hardcoded just for testing. */
 		//Entregar un BEGIN U T
         char *begin = "BEGIN U";
-		
-        int rc = strlen(begin);
+		char *begin_n = (char *) malloc(len(begin)+2);
+		strcpy(begin_n, begin);
+		begin_n[len(begin)+1] = num_pot[0];
+		begin_n[len(begin)+2] = '\0';		
+        int rc = strlen(begin_n);
 
         /* Request the random number stream to datagen */
-        if (write(fd, begin, strlen(begin)) != rc) {
+        if (write(fd, begin_n, strlen(begin_n)) != rc) {
             if (rc > 0) fprintf(stderr, "[quicksort] partial write.\n");
             else {
                 perror("[quicksort] write error.\n");
