@@ -14,33 +14,34 @@
 
 // TODO: implement
 
-void swap(UINT* A, int in, int fin){
-	int temp = A[in];
-	A[in] = A[fin];
-	A[fin] = temp; 
-}
+void qs(UINT* lista,int limite_izq,int limite_der)
+	{
+	    int izq,der,temporal,pivote;
 
-int partition(UINT* A, int lo, int hi) {
-	int pivot = A[hi];
-	int i = lo;
-	for (int j = lo; j < hi; j++) {
-		if (A[j] < pivot) {
-			swap(A, i, j);
-			i = i + 1;
-		}
+	    izq=limite_izq;
+	    der = limite_der;
+	    pivote = lista[(izq+der)/2];
+
+	    do{
+	        while(lista[izq]<pivote && izq<limite_der)izq++;
+	        while(pivote<lista[der] && der > limite_izq)der--;
+	        if(izq <=der)
+	        {
+	            temporal= lista[izq];
+	            lista[izq]=lista[der];
+	            lista[der]=temporal;
+	            izq++;
+	            der--;
+	        }
+
+	    }while(izq<=der);
+	    if(limite_izq<der){qs(lista,limite_izq,der);}
+	    if(limite_der>izq){qs(lista,izq,limite_der);}
 	}
-	swap(A, i, hi);
-	return i;
-}
-
-int quicksort(UINT* A, int lo, int hi) {
-    if (lo < hi) {
-	int p = partition(A, lo, hi);
-	quicksort(A, lo, p - 1 );
-	quicksort(A, p + 1, hi);
-    }
-    return 0;
-}
+	void quicksort(UINT* lista,int n)
+	{
+	    qs(lista,0,n-1);
+	}
 
 // TODO: implement
 int parallel_quicksort(UINT* A, int lo, int hi) {
@@ -89,7 +90,7 @@ int main(int argc, char** argv) {
 	else if(pid == 0){
 		execvp("./datagen", argv);
 	}
-	
+
 
     /* Create the domain socket to talk to datagen. */
     struct sockaddr_un addr;
@@ -121,7 +122,7 @@ int main(int argc, char** argv) {
 	char *begin_n = (char *) malloc(len+1 +1);
 	strcpy(begin_n, begin);
 	begin_n[len] = num_pot +'0';
-	begin_n[len+1] = '\0';	
+	begin_n[len+1] = '\0';
 	fprintf(stderr,"sending %s\n",begin_n);
         int rc = strlen(begin_n);
 
@@ -158,13 +159,21 @@ int main(int argc, char** argv) {
         }
 
         /* Print out the values obtained from datagen */
-	printf("\nE%d: ", i+1);
+				printf("\nE%d: ", i+1);
         for (UINT *pv = readbuf; pv < readbuf + numvalues; pv++) {
             printf("%u, ", *pv); // Aquí tendriamos que llamar a los quicksort
-        }
 
+				}
+
+				qs(readbuf, 0, numvalues);
+				printf("\nS%d: ", i+1);
+        for (UINT *pv = readbuf; pv < readbuf + numvalues; pv++) {
+            printf("%u, ", *pv); // Aquí tendriamos que llamar a los quicksort
+
+				}
         free(readbuf);
     }
+
 
     /* Issue the END command to datagen */
     int rc = strlen(DATAGEN_END_CMD);
