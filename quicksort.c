@@ -121,7 +121,7 @@ int main(int argc, char** argv) {
         }
 
         UINT readvalues = 0;
-        size_t numvalues = pow(10, 3);
+        size_t numvalues = pow(10, num_pot);
         size_t readbytes = 0;
 
         UINT *readbuf = malloc(sizeof(UINT) * numvalues);
