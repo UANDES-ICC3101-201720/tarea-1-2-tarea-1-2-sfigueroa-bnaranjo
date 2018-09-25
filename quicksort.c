@@ -30,37 +30,34 @@ int main(int argc, char** argv) {
            sysconf(_SC_NPROCESSORS_ONLN));
 
     /* TODO: parse arguments with getopt */
-    char* Tvalue;
-    int Evalue = 0;
-    int index;
-    int c;
-    opterr = 0;
-	while ((c = getopt (argc, argv, "E:T:")) != -1)
-		switch (c){
+	int num_exp, num_pot, opt;
+	while ((opt = getopt (argc, argv, "E:T:")) != -1)
+	{
+		switch (opt)
+		{
 			case 'E':
-				Evalue = atoi(optarg);
+				num_exp = atoi(optarg);
+				if(num_exp < 1) {
+					printf("-E value out of range, exiting program\n");
+					exit(-1);
+				}
 				break;
 			case 'T':
-				Tvalue = optarg;
+				num_pot = atoi(optarg);
+				if(num_pot < 3 || num_pot > 9){
+					printf("-T value out of range, exiting program\n");
+					exit(-1);
+				}
 				break;
 			case '?':
-				if (optopt == 'T' || optopt == 'E')
-				  fprintf (stderr, "Option -%c requires an argument.\n", optopt);
-				else if (isprint(optopt))
-				  fprintf (stderr, "Unknown option `-%c'.\n", optopt);
-				else
-				  fprintf (stderr,
-					   "Unknown option character `\\x%x'.\n",
-					   optopt);
-				return 1;
-			default:
-				abort ();
+				printf("please use -e <number of experiments> -t <exponent of size of array> -p <position to find in array>");
+				break;
 		}
-	for (index = optind; index < argc; index++)
-		printf ("Non-option argument %s\n", argv[index]);
-    printf("\n%i , %s\n",Evalue,Tvalue);
-
-
+	}
+	if(num_pos < 0 || num_pos > pow(10,num_pot)){
+		printf("-P value out of range, exiting program\n"); 
+		exit(-1);
+}
     /* TODO: start datagen here as a child process. */
 	pid_t pid = fork();
 	if(pid == -1){
