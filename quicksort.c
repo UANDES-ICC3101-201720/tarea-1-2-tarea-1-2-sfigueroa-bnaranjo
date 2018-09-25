@@ -91,11 +91,13 @@ int main(int argc, char** argv) {
     for (int i = 0; i < num_exp; i++) {
         /* T value 3 hardcoded just for testing. */
 		//Entregar un BEGIN U T
-        char *begin = "BEGIN U";
-		char *begin_n = (char *) malloc(len(begin)+2);
+        char *begin = "BEGIN U ";
+		size_t len = strlen(begin);
+		char *begin_n = (char *) malloc(len+1 +1);
 		strcpy(begin_n, begin);
-		begin_n[len(begin)+1] = num_pot[0];
-		begin_n[len(begin)+2] = '\0';		
+		begin_n[len] = num_pot +'0';
+		begin_n[len+1] = '\0';	
+		fprintf(stderr,"sending %s\n",begin_n);
         int rc = strlen(begin_n);
 
         /* Request the random number stream to datagen */
