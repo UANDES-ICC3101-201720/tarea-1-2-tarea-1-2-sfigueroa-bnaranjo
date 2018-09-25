@@ -115,7 +115,7 @@ int main(int argc, char** argv) {
     /* DEMO: request two sets of unsorted random numbers to datagen */
 	//Cambiar las veces que lo lanza  a "T" veces (num_exp)
     for (int i = 0; i < num_exp; i++) {
-        /* T value 3 hardcoded just for testing. */
+		/* T value 3 hardcoded just for testing. */
 		//Entregar un BEGIN U T
         char *begin = "BEGIN U ";
 	size_t len = strlen(begin);
@@ -124,54 +124,55 @@ int main(int argc, char** argv) {
 	begin_n[len] = num_pot +'0';
 	begin_n[len+1] = '\0';
 	fprintf(stderr,"sending %s\n",begin_n);
-        int rc = strlen(begin_n);
+      int rc = strlen(begin_n);
 
-        /* Request the random number stream to datagen */
-        if (write(fd, begin_n, strlen(begin_n)) != rc) {
-            if (rc > 0) fprintf(stderr, "[quicksort] partial write.\n");
-            else {
-                perror("[quicksort] write error.\n");
-                exit(-1);
-            }
-        }
+      /* Request the random number stream to datagen */
+      if (write(fd, begin_n, strlen(begin_n)) != rc) {
+          if (rc > 0) fprintf(stderr, "[quicksort] partial write.\n");
+          else {
+              perror("[quicksort] write error.\n");
+              exit(-1);
+          }
+      }
 
-        /* validate the response */
-        char respbuf[10];
-        read(fd, respbuf, strlen(DATAGEN_OK_RESPONSE));
-        respbuf[strlen(DATAGEN_OK_RESPONSE)] = '\0';
+      /* validate the response */
+      char respbuf[10];
+      read(fd, respbuf, strlen(DATAGEN_OK_RESPONSE));
+      respbuf[strlen(DATAGEN_OK_RESPONSE)] = '\0';
 
-        if (strcmp(respbuf, DATAGEN_OK_RESPONSE)) {
-            perror("[quicksort] Response from datagen failed.\n");
-            close(fd);
-            exit(-1);
-        }
+      if (strcmp(respbuf, DATAGEN_OK_RESPONSE)) {
+          perror("[quicksort] Response from datagen failed.\n");
+          close(fd);
+          exit(-1);
+      }
 
-        UINT readvalues = 0;
-        size_t numvalues = pow(10, num_pot);
-        size_t readbytes = 0;
+      UINT readvalues = 0;
+      size_t numvalues = pow(10, num_pot);
+      size_t readbytes = 0;
 
-        UINT *readbuf = malloc(sizeof(UINT) * numvalues);
+      UINT *readbuf = malloc(sizeof(UINT) * numvalues);
 
-        while (readvalues < numvalues) {
-            /* read the bytestream */
-            readbytes = read(fd, readbuf + readvalues, sizeof(UINT) * 1000);
-            readvalues += readbytes / 4;
-        }
+      while (readvalues < numvalues) {
+          /* read the bytestream */
+          readbytes = read(fd, readbuf + readvalues, sizeof(UINT) * 1000);
+          readvalues += readbytes / 4;
+      }
 
-        /* Print out the values obtained from datagen */
-				printf("\nE%d: ", i+1);
-        for (UINT *pv = readbuf; pv < readbuf + numvalues; pv++) {
-            printf("%u, ", *pv); // Aquí tendriamos que llamar a los quicksort
+      /* Print out the values obtained from datagen */
+			printf("\nE%d: ", i+1);
+      for (UINT *pv = readbuf; pv < readbuf + numvalues; pv++) {
+          printf("%u \t ", *pv); // Aquí tendriamos que llamar a los quicksort
 
-				}
+			}
 
-				qs(readbuf, 0, numvalues);
-				printf("\nS%d: ", i+1);
-        for (UINT *pv = readbuf; pv < readbuf + numvalues; pv++) {
-            printf("%u, ", *pv); // Aquí tendriamos que llamar a los quicksort
+			qs(readbuf, 0, numvalues);
 
-				}
-        free(readbuf);
+			printf("\nS%d: ", i+1);
+      for (UINT *pv = readbuf; pv < readbuf + numvalues; pv++) {
+          printf("%u\t ", *pv); // Aquí tendriamos que llamar a los quicksort
+
+			}
+      free(readbuf);
     }
 
 
