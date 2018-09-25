@@ -13,7 +13,32 @@
 #include "util.h"
 
 // TODO: implement
+
+void swap(UINT* A, int in, int fin){
+	int temp = A[in];
+	A[in] = A[fin];
+	A[fin] = temp; 
+}
+
+int partition(UINT* A, int lo, int hi) {
+	int pivot = A[hi];
+	int i = lo;
+	for (int j = lo; j < hi; j++) {
+		if (A[j] < pivot) {
+			swap(A, i, j);
+			i = i + 1;
+		}
+	}
+	swap(A, i, hi);
+	return i;
+}
+
 int quicksort(UINT* A, int lo, int hi) {
+    if (lo < hi) {
+	int p = partition(A, lo, hi);
+	quicksort(A, lo, p - 1 );
+	quicksort(A, p + 1, hi);
+    }
     return 0;
 }
 
@@ -92,12 +117,12 @@ int main(int argc, char** argv) {
         /* T value 3 hardcoded just for testing. */
 		//Entregar un BEGIN U T
         char *begin = "BEGIN U ";
-		size_t len = strlen(begin);
-		char *begin_n = (char *) malloc(len+1 +1);
-		strcpy(begin_n, begin);
-		begin_n[len] = num_pot +'0';
-		begin_n[len+1] = '\0';	
-		fprintf(stderr,"sending %s\n",begin_n);
+	size_t len = strlen(begin);
+	char *begin_n = (char *) malloc(len+1 +1);
+	strcpy(begin_n, begin);
+	begin_n[len] = num_pot +'0';
+	begin_n[len+1] = '\0';	
+	fprintf(stderr,"sending %s\n",begin_n);
         int rc = strlen(begin_n);
 
         /* Request the random number stream to datagen */
@@ -133,8 +158,9 @@ int main(int argc, char** argv) {
         }
 
         /* Print out the values obtained from datagen */
+	printf("\nE%d: ", i+1);
         for (UINT *pv = readbuf; pv < readbuf + numvalues; pv++) {
-            printf("%u\n", *pv); // Aquí tendriamos que llamar a los quicksort
+            printf("%u, ", *pv); // Aquí tendriamos que llamar a los quicksort
         }
 
         free(readbuf);
