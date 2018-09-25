@@ -1,18 +1,23 @@
 #include <stdio.h>
-#include <ctype.h>
+#include <time.h>
 #include <stdlib.h>
-#include <math.h>
 #include <unistd.h>
+#include <limits.h>
+#include <math.h>
 #include <sys/socket.h>
+#include <sys/wait.h>
 #include <sys/un.h>
 #include <stdbool.h>
 #include <string.h>
-#include <time.h>
+#include <getopt.h>
+#include <pthread.h>
 #include "types.h"
 #include "const.h"
 #include "util.h"
 
 // TODO: implement
+pthread_mutex_t lock = PTHREAD_MUTEX_INITIALIZER;
+pthread_cond_t cond = PTHREAD_COND_INITIALIZER;
 
 void qs(UINT* lista,int limite_izq,int limite_der)
 	{
@@ -21,7 +26,6 @@ void qs(UINT* lista,int limite_izq,int limite_der)
 	    izq=limite_izq;
 	    der = limite_der;
 	    pivote = lista[(izq+der)/2];
-
 	    do{
 	        while(lista[izq]<pivote && izq<limite_der)izq++;
 	        while(pivote<lista[der] && der > limite_izq)der--;
@@ -37,10 +41,16 @@ void qs(UINT* lista,int limite_izq,int limite_der)
 	    }while(izq<=der);
 	    if(limite_izq<der){qs(lista,limite_izq,der);}
 	    if(limite_der>izq){qs(lista,izq,limite_der);}
+
 	}
 	void quicksort(UINT* lista,int n)
 	{
+
+		pthread_mutex_lock(&lock);
 	    qs(lista,0,n-1);
+			pthread_mutex_unlock(&lock);
+			pthread_cond_broadcast(&cond);
+
 	}
 
 // TODO: implement
@@ -173,6 +183,7 @@ int main(int argc, char** argv) {
 
 			}
       free(readbuf);
+			printf("\n");
     }
 
 
