@@ -54,10 +54,7 @@ int main(int argc, char** argv) {
 				break;
 		}
 	}
-	if(num_pos < 0 || num_pos > pow(10,num_pot)){
-		printf("-P value out of range, exiting program\n"); 
-		exit(-1);
-}
+	
     /* TODO: start datagen here as a child process. */
 	pid_t pid = fork();
 	if(pid == -1){
@@ -90,9 +87,12 @@ int main(int argc, char** argv) {
 
 
     /* DEMO: request two sets of unsorted random numbers to datagen */
-    for (int i = 0; i < 2; i++) {
+	//Cambiar las veces que lo lanza  a "T" veces (num_exp)
+    for (int i = 0; i < num_exp; i++) {
         /* T value 3 hardcoded just for testing. */
-        char *begin = "BEGIN U 3";
+		//Entregar un BEGIN U T
+        char *begin = "BEGIN U";
+		
         int rc = strlen(begin);
 
         /* Request the random number stream to datagen */
