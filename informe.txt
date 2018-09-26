@@ -1,0 +1,9 @@
+Problemas:
+	Al imprimir los números, habían algunos que no se alcanzaban a imprimir 
+	antes de que [datagen] imprimiera los ultimos mensajes.
+	Las primeras veces que se ejecuta ./quicksort -T 2 -E 3 dice "connection error",
+	pero al segundo o tercer intento se comienzan a recibir los datos y el programa
+	sin problema.
+
+Por implementar:
+	
