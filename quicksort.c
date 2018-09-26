@@ -54,17 +54,38 @@ void quicksort(UINT *array, int left, int right)
 }
 
 // TODO: implement
-int parallel_quicksort(UINT* A, int lo, int hi) {
-		/*Crear los numeros de threads dependiendo de la cantidad de nucleos
-		int max_threads = sysconf(_SC_NPROCESSORS_ONLN);
-		for(int i = 0; i < max_threads; i++)
-		{
+struct args {
+    UINT *A;
+    int lower, higher, number_threads;
+};
+int parallel_quicksort(UINT* A, int lower, int higher, int number_threads);
+void * parallel_sort(void * arg){
+    struct args * info = arg;
+    parallel_quicksort(info->A, info -> lower, info -> higher, info -> number_threads);
+    return NULL;
+}
 
-		}
-		//while este desordenado
-			// a cada thread entregarle el arreglo al cual se hace quicksort con un pivote global
-			//retornar un array global
-			*/
+int parallel_quicksort(UINT* A, int lower, int higher, int number_threads) {
+		/*Se crea un thread por cada vez que se llama la funcion hasta alcanzar la cantidad de nucleos disponibles*/
+		if (higher > 1){
+            int pivot = (higher -1)/2 + 1;
+            pivot = partition(A, lower, higher, pivot);
+            
+            if (number_threads > 1){
+                struct args arg = {A, 1, pivot-1, number_threads};
+                pthread_t t;
+                int t_create = pthread_create(&t, NULL, parallel_sort, &arg);
+                assert((t_create == 0) && "Thread creation failed");
+                number_threads--;
+                parallel_quicksort(A, lower, higher, number_threads);
+                pthread_join(t, NULL);
+            }
+            else{
+                quicksort(A, 1, pivot-1);
+                quicksort(A, pivot, higher);
+            }
+        }
+
     return 0;
 
 }
@@ -182,11 +203,12 @@ int main(int argc, char** argv) {
       /* Print out the values obtained from datagen */
 			printf("\nE%d: ", i+1);
       for (UINT *pv = readbuf; pv < readbuf + numvalues; pv++) {
-          printf("%u,\t ", *pv); // Aquí tendriamos que llamar a los quicksort
+            printf("%u,\t ", *pv); // Aquí tendriamos que llamar a los quicksort
 
 			}
 
-			quicksort(readbuf, 0, numvalues);
+			//quicksort(readbuf, 0, numvalues);
+            parallel_quicksort(readbuf, 0, numvalues, sysconf(_SC_NPROCESSORS_ONLN));
 
 			printf("\nS%d: ", i+1);
       for (UINT *pv = readbuf; pv < readbuf + numvalues; pv++) {
